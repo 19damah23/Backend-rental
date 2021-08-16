@@ -119,14 +119,14 @@ const addVehicle = async (req, res, next) => {
 const getAllVehicles = async (req, res, next) => {
   try {
     let { search, perPage, orderBy, sortBy, page } = req.query;
-    
+
     search = search || "";
     page = parseInt(page) || 1
     perPage = parseInt(perPage) || 16;
     orderBy = orderBy || "name";
     sortBy = sortBy || "DESC";
     offset = (page - 1) * perPage;
-    
+
     const allData = await vehicleModels.getAllVehicles(search);
     const totalData = allData.length;
     const totalPage = Math.ceil(totalData / perPage);
@@ -169,7 +169,25 @@ const getAllVehicles = async (req, res, next) => {
   }
 };
 
+// get vehicle by id
+const getVehicle = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const vehicle = await vehicleModels.getVehicle(id)
+    const image = JSON.parse(vehicle[0].images)
+    vehicle[0].images = image
+
+    res.status(200);
+    res.json({
+      data: vehicle,
+    });
+  } catch (error) {
+    next(new Error(error.message))
+  }
+}
 module.exports = {
   addVehicle,
-  getAllVehicles
+  getAllVehicles,
+  getVehicle
 };

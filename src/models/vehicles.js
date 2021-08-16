@@ -33,8 +33,20 @@ const getVehiclesWithPaginate = (perPage, offset, orderBy, sortBy, search) => ne
   })
 })
 
+// Get vehicle by id
+const getVehicle = (id) => new Promise((resolve, reject) => {
+  conn.query(`SELECT * FROM vehicles WHERE id = '${id}'`, (error, result) => {
+    if (!error) {
+      resolve(result)
+    } else {
+      reject(error)
+    }
+  })
+})
+
 module.exports = {
   addVehicle,
   getAllVehicles,
-  getVehiclesWithPaginate
+  getVehiclesWithPaginate,
+  getVehicle
 }
