@@ -27,7 +27,7 @@ const uploadImageHandler = async (req) => {
         throw new Error(`File type ${extension} are not supported!`);
       }
 
-      productImages.push(fileName);
+      vehicleImages.push(fileName);
 
       file.mv(outputPath);
     });
@@ -122,7 +122,7 @@ const getAllVehicles = async (req, res, next) => {
     let { search, perPage, orderBy, sortBy, page } = req.query;
 
     search = search || "";
-    page = parseInt(page) || 1
+    page = parseInt(page) || 1;
     perPage = parseInt(perPage) || 16;
     orderBy = orderBy || "name";
     sortBy = sortBy || "DESC";
@@ -164,7 +164,7 @@ const getAllVehicles = async (req, res, next) => {
     }
 
     if (!dataPaginate.length)
-      return res.status(404).send({ message: 'Data not found' });
+      return res.status(404).send({ message: "Data not found" });
   } catch (error) {
     next(new Error(error.message));
   }
@@ -175,25 +175,25 @@ const getVehicle = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const vehicle = await vehicleModels.getVehicle(id)
-    const image = JSON.parse(vehicle[0].images)
-    vehicle[0].images = image
+    const vehicle = await vehicleModels.getVehicle(id);
+    const image = JSON.parse(vehicle[0].images);
+    vehicle[0].images = image;
 
     res.status(200);
     res.json({
       data: vehicle,
     });
   } catch (error) {
-    next(new Error(error.message))
+    next(new Error(error.message));
   }
-}
+};
 
 // delete vehicle
 const deleteVehicle = async (req, res, next) => {
   try {
     // if (req.user.role !== 'admin')
     //   return res.status(400).send({ message: 'you do not have access rights to delete product data' });
-    
+
     const { id } = req.params;
 
     const images = await vehicleModels.getVehicle(id);
@@ -203,25 +203,94 @@ const deleteVehicle = async (req, res, next) => {
 
     oldImages.map((img) => {
       fs.unlink(path.join(__dirname, `/../assets/images/${img}`)),
-      (err) => {
-        if (err) {
-          console.log(err.message)
-        }
-      };
+        (err) => {
+          if (err) {
+            console.log(err.message);
+          }
+        };
     });
 
     res.status(202);
-     res.json({
-       message: 'Vehicle successfully deleted!'
-     });
+    res.json({
+      message: "Vehicle successfully deleted!",
+    });
+  } catch (error) {
+    next(new Error(error.message));
+  }
+};
+
+// edit vehicle data
+const editVehicle = async (req, res, next) => {
+  try {
+    // if (req.user.role !== "admin")
+    //   return res
+    //     .status(400)
+    //     .send({
+    //       message: "you do not have access rights to delete product data",
+    //     });
+
+    const { id } = req.params;
+    const { name, location, description, status, category, price, stock } =
+      req.body;
+
+    if (!name)
+      return res.status(400).send({ message: "Name cannot be null!" });
+    if (!location)
+      return res.status(400).send({ message: "Location cannot be null!" });
+    if (!description)
+      return res.status(400).send({ message: "Description cannot be null!" });
+    if (!status)
+      return res.status(400).send({ message: "Status cannot be null!" });
+    if (!category)
+      return res.status(400).send({ message: "Category cannot be null!" });
+    if (!price)
+      return res.status(400).send({ message: "Price cannot be null!" });
+    if (!stock)
+      return res.status(400).send({ message: "Stock cannot be null!" });
+    if (!req.files && !req.body.images) return res.status(400).send({ message: 'Images cannot be null' });
+    
+    let oldImages = []
+    if (req.body.images) {
+      oldImages = req.body.images
+    }
+
+    let newImages = []
+    if (req.files) {
+      newImages = (await uploadImageHandler(req)).file_name;
+    }
+
+    const images = oldImages.concat(newImages)
+    const date = new Date();
+    const datetime =
+      date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+
+    const data = {
+      name,
+      location,
+      description,
+      category,
+      price,
+      stock,
+      status,
+      images: JSON.stringify(images),
+      updatedAt: datetime,
+    }
+
+    await vehicleModels.editVehicle(data, id)
+
+    res.status(200).send({
+      message: 'Successfully update vehicle!',
+      data
+    });
   } catch (error) {
     next(new Error(error.message))
   }
-}
+};
 
 module.exports = {
   addVehicle,
   getAllVehicles,
   getVehicle,
-  deleteVehicle
+  deleteVehicle,
+  editVehicle
 };

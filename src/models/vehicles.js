@@ -55,10 +55,22 @@ const deleteVehicle = (id) => new Promise((resolve, reject) => {
   })
 })
 
+// Edit vehicle
+const editVehicle = (data, id) => new Promise((resolve, reject) => {
+  conn.query(`UPDATE vehicles SET ? WHERE id = '${id}'`, data, (error, result) => {
+    if (!error) {
+      resolve(result)
+    } else {
+      reject(error)
+    }
+  })
+})
+
 module.exports = {
   addVehicle,
   getAllVehicles,
   getVehiclesWithPaginate,
   getVehicle,
-  deleteVehicle
+  deleteVehicle,
+  editVehicle
 }

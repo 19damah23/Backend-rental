@@ -8,5 +8,6 @@ router
   .get('/', vehiclesController.getAllVehicles)
   .get('/:id', vehiclesController.getVehicle)
   .delete('/:id', vehiclesController.deleteVehicle)
-  
+  .patch('/:id', vehiclesController.editVehicle)
+
 module.exports = router;
