@@ -191,8 +191,12 @@ const getVehicle = async (req, res, next) => {
 // delete vehicle
 const deleteVehicle = async (req, res, next) => {
   try {
-    // if (req.user.role !== 'admin')
-    //   return res.status(400).send({ message: 'you do not have access rights to delete product data' });
+    if (req.user.role !== "admin")
+      return res
+        .status(400)
+        .send({
+          message: "you do not have access rights to delete product data",
+        });
 
     const { id } = req.params;
 
@@ -222,19 +226,16 @@ const deleteVehicle = async (req, res, next) => {
 // edit vehicle data
 const editVehicle = async (req, res, next) => {
   try {
-    // if (req.user.role !== "admin")
-    //   return res
-    //     .status(400)
-    //     .send({
-    //       message: "you do not have access rights to delete product data",
-    //     });
+    if (req.user.role !== "admin")
+      return res.status(400).send({
+        message: "you do not have access rights to delete product data",
+      });
 
     const { id } = req.params;
     const { name, location, description, status, category, price, stock } =
       req.body;
 
-    if (!name)
-      return res.status(400).send({ message: "Name cannot be null!" });
+    if (!name) return res.status(400).send({ message: "Name cannot be null!" });
     if (!location)
       return res.status(400).send({ message: "Location cannot be null!" });
     if (!description)
@@ -247,19 +248,20 @@ const editVehicle = async (req, res, next) => {
       return res.status(400).send({ message: "Price cannot be null!" });
     if (!stock)
       return res.status(400).send({ message: "Stock cannot be null!" });
-    if (!req.files && !req.body.images) return res.status(400).send({ message: 'Images cannot be null' });
-    
-    let oldImages = []
+    if (!req.files && !req.body.images)
+      return res.status(400).send({ message: "Images cannot be null" });
+
+    let oldImages = [];
     if (req.body.images) {
-      oldImages = req.body.images
+      oldImages = req.body.images;
     }
 
-    let newImages = []
+    let newImages = [];
     if (req.files) {
       newImages = (await uploadImageHandler(req)).file_name;
     }
 
-    const images = oldImages.concat(newImages)
+    const images = oldImages.concat(newImages);
     const date = new Date();
     const datetime =
       date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
@@ -274,16 +276,16 @@ const editVehicle = async (req, res, next) => {
       status,
       images: JSON.stringify(images),
       updatedAt: datetime,
-    }
+    };
 
-    await vehicleModels.editVehicle(data, id)
+    await vehicleModels.editVehicle(data, id);
 
     res.status(200).send({
-      message: 'Successfully update vehicle!',
-      data
+      message: "Successfully update vehicle!",
+      data,
     });
   } catch (error) {
-    next(new Error(error.message))
+    next(new Error(error.message));
   }
 };
 
@@ -292,5 +294,5 @@ module.exports = {
   getAllVehicles,
   getVehicle,
   deleteVehicle,
-  editVehicle
+  editVehicle,
 };
