@@ -1,6 +1,7 @@
 const vehicleModels = require("../models/vehicles");
 const { v4: uuid } = require("uuid");
 const path = require("path");
+const fs = require("fs/promises");
 
 const uploadImageHandler = async (req) => {
   if (req.files === null) {
@@ -62,7 +63,7 @@ const uploadImageHandler = async (req) => {
 // Create new vehicle
 const addVehicle = async (req, res, next) => {
   try {
-    if (req.user.role != "admin")
+    if (req.user.role !== "admin")
       return res
         .status(400)
         .send({ message: `You don't have access rights to add vehicle data!` });
@@ -186,8 +187,41 @@ const getVehicle = async (req, res, next) => {
     next(new Error(error.message))
   }
 }
+
+// delete vehicle
+const deleteVehicle = async (req, res, next) => {
+  try {
+    // if (req.user.role !== 'admin')
+    //   return res.status(400).send({ message: 'you do not have access rights to delete product data' });
+    
+    const { id } = req.params;
+
+    const images = await vehicleModels.getVehicle(id);
+    const oldImages = JSON.parse(images[0].images);
+
+    await vehicleModels.deleteVehicle(id);
+
+    oldImages.map((img) => {
+      fs.unlink(path.join(__dirname, `/../assets/images/${img}`)),
+      (err) => {
+        if (err) {
+          console.log(err.message)
+        }
+      };
+    });
+
+    res.status(202);
+     res.json({
+       message: 'Vehicle successfully deleted!'
+     });
+  } catch (error) {
+    next(new Error(error.message))
+  }
+}
+
 module.exports = {
   addVehicle,
   getAllVehicles,
-  getVehicle
+  getVehicle,
+  deleteVehicle
 };

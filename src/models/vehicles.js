@@ -44,9 +44,21 @@ const getVehicle = (id) => new Promise((resolve, reject) => {
   })
 })
 
+// Delete vehicle
+const deleteVehicle = (id) => new Promise((resolve, reject) => {
+  conn.query(`DELETE FROM vehicles WHERE id = '${id}'`, (error, result) => {
+    if (!error) {
+      resolve(result)
+    } else {
+      reject(error)
+    }
+  })
+})
+
 module.exports = {
   addVehicle,
   getAllVehicles,
   getVehiclesWithPaginate,
-  getVehicle
+  getVehicle,
+  deleteVehicle
 }

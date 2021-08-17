@@ -7,5 +7,6 @@ router
   .post('/add', vehiclesController.addVehicle)
   .get('/', vehiclesController.getAllVehicles)
   .get('/:id', vehiclesController.getVehicle)
-
+  .delete('/:id', vehiclesController.deleteVehicle)
+  
 module.exports = router;
