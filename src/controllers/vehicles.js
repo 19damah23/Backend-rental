@@ -231,6 +231,8 @@ const editVehicle = async (req, res, next) => {
         message: "you do not have access rights to delete product data",
       });
 
+    console.log(req.body)
+
     const { id } = req.params;
     const { name, location, description, status, category, price, stock } =
       req.body;
@@ -253,12 +255,18 @@ const editVehicle = async (req, res, next) => {
 
     let oldImages = [];
     if (req.body.images) {
-      oldImages = req.body.images;
+      const image = req.body.images
+      if (image.length >1) {
+        oldImages = req.body.images
+      } else {
+        oldImages = req.body.images.split(',');
+      }
     }
 
     let newImages = [];
     if (req.files) {
       newImages = (await uploadImageHandler(req)).file_name;
+      console.log((await uploadImageHandler(req)).file_name)
     }
 
     const images = oldImages.concat(newImages);
