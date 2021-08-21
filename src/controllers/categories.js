@@ -20,15 +20,36 @@ const createCategory = async (req, res, next) => {
     await categoryModels.createCategory(data)
 
     res.status(201);
-     res.json({
-       message: 'Successfully created new category',
-       data
-     });
+    res.json({
+      message: 'Successfully created new category',
+      data
+    });
+  } catch (error) {
+    next(new Error(error.message))
+  }
+}
+
+// Get categories
+const getCategories = async (req, res, next) => {
+  try {
+    const categories = await categoryModels.getCategories()
+
+    if (categories.length > 0) {
+      res.status(200);
+      res.json({
+        data: categories
+      });
+    } else {
+      res.status(404).send({
+        message: 'Data not found!'
+      });
+    }
   } catch (error) {
     next(new Error(error.message))
   }
 }
 
 module.exports = {
-  createCategory
+  createCategory,
+  getCategories
 }

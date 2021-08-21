@@ -11,6 +11,18 @@ const createCategory = (data) => new Promise((resolve, reject) => {
   })
 })
 
+// Get categories
+const getCategories = () => new Promise((resolve, reject) => {
+  conn.query('SELECT * FROM categories', (error, result) => {
+    if (!error) {
+      resolve(result)
+    } else {
+      reject(error)
+    }
+  })
+})
+
 module.exports = {
-  createCategory
+  createCategory,
+  getCategories
 }
