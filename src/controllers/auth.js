@@ -2,11 +2,12 @@ const authModels = require('../models/auth');
 const { v4: uuid } = require('uuid');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
+const verification = require('../helpers/common')
 
 // Make register user
 const register = async (req, res, next) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     if (!name)
       return res.status(400).send({ message: 'name cannot be null' })
@@ -14,8 +15,6 @@ const register = async (req, res, next) => {
       return res.status(400).send({ message: 'name cannot be null' })
     if (!password)
       return res.status(400).send({ message: 'password cannot be null' })
-    if (!role)
-      return res.status(400).send({ message: 'role cannot be null' })
 
     const user = await authModels.findUser(email);
     if (user.length > 0)
@@ -31,7 +30,7 @@ const register = async (req, res, next) => {
           id: uuid().split('-').join(''),
           name,
           email,
-          role,
+          role: 'member',
           password: hash,
           createdAt: datetime,
           updatedAt: datetime
@@ -39,6 +38,13 @@ const register = async (req, res, next) => {
 
         authModels.register(data);
         delete data.password;
+
+        const payload = {
+          name,
+          email,
+        }
+        const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET)
+        verification.sendEmail(email, name, token)
 
         res.status(201);
         res.json({
@@ -52,17 +58,41 @@ const register = async (req, res, next) => {
   }
 }
 
+const userActivation = async (req, res, next) => {
+  try {
+    const { token } = req.params;
+
+    if (!token) return res.status(401).send({ message: 'server need token' });
+    
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+      if (err) {
+        if (err.name = 'TokenExpiredError') return res.status(403).send({ message: 'Token expired!' });
+        if (err.name = 'JsonWebTokenError') return res.status(403).send({ message: err.message });
+        if (err.name = 'NotBeforeError') return res.status(403).send({ message: 'jwt not active!' });
+      }
+
+      const email = decoded.email;
+      const status = 'actived'
+      
+      authModels.userActivation(email, status)
+      res.status(200);
+       res.json({
+         message: 'Successfully activation user!'
+       });
+    })
+  } catch (error) {
+    next(new Error(error.message))
+  }
+}
+
 // User login
 const login = async (req, res, next) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, password } = req.body;
     const user = (await authModels.findUser(email))[0];
 
     if (!user)
       return res.status(404).send({ message: 'email not registered!' });
-
-    if (user.role != role)
-      return res.status(400).send({ message: 'please login accourding to your role!' });
 
     bcrypt.compare(password, user.password, (err, resCompare) => {
       if (resCompare === false)
@@ -92,5 +122,6 @@ const login = async (req, res, next) => {
 
 module.exports = {
   register,
-  login
+  login,
+  userActivation
 }
