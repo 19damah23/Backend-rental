@@ -49,7 +49,24 @@ const getCategories = async (req, res, next) => {
   }
 }
 
+// Get category
+const getCategory = async (req, res, next) => {
+  try {
+    const { id } = req.params
+
+    const category = await categoryModels.getCategory(id)
+
+    res.status(200)
+     res.json({
+       data: category
+     })
+  } catch (error) {
+    next(new Error(error.message))
+  }
+}
+
 module.exports = {
   createCategory,
-  getCategories
+  getCategories,
+  getCategory
 }

@@ -22,7 +22,19 @@ const getCategories = () => new Promise((resolve, reject) => {
   })
 })
 
+// Get category
+const getCategory = (id) => new Promise((resolve, reject) => {
+  conn.query(`SELECT * FROM categories WHERE id = '${id}'`, (error, result) => {
+    if (!error) {
+      resolve(result)
+    } else {
+      reject(error)
+    }
+  })
+})
+
 module.exports = {
   createCategory,
-  getCategories
+  getCategories,
+  getCategory
 }
