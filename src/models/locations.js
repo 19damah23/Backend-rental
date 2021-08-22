@@ -1,7 +1,17 @@
 const conn = require('../configs/db')
 
 const createLocation = (data) => new Promise((resolve, reject) => {
-  conn.query('INSERT INTO categories SET ?', data, (error, result) => {
+  conn.query('INSERT INTO locations SET ?', data, (error, result) => {
+    if (!error) {
+      resolve(result)
+    } else {
+      reject(error)
+    }
+  })
+})
+
+const getLocations = () => new Promise((resolve, reject) => {
+  conn.query('SELECT * FROM locations', (error, result) => {
     if (!error) {
       resolve(result)
     } else {
@@ -11,5 +21,6 @@ const createLocation = (data) => new Promise((resolve, reject) => {
 })
 
 module.exports = {
-  createLocation
+  createLocation,
+  getLocations
 }

@@ -1,7 +1,7 @@
 const locationModels = require("../models/locations");
 const { v4: uuid } = require("uuid");
 
-const createLocation = async () => {
+const createLocation = async (req, res, next) => {
   try {
     const title = req.body.title
 
@@ -28,6 +28,26 @@ const createLocation = async () => {
   }
 }
 
+const getLocations = async (req, res, next) => {
+  try {
+    const data = await locationModels.getLocations()
+
+    if (data.length > 0) {
+      res.status(200);
+      res.json({
+        data
+      });
+    } else {
+      res.status(404).send({
+        message: 'Data not found!'
+      });
+    }
+  } catch (error) {
+    next(new Error(error.message))
+  }
+}
+
 module.exports ={
-  createLocation
+  createLocation,
+  getLocations
 }

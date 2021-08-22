@@ -6,5 +6,6 @@ const auth = require('../middlewares/auth')
 
 router
   .post('/', auth, locationControllers.createLocation)
+  .get('/', locationControllers.getLocations)
 
 module.exports = router;
