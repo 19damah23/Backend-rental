@@ -10,5 +10,6 @@ router
   .use('/vehicles', vehicleRoutes)
   .use('/auth', authRoutes)
   .use('/category', categoryRoutes)
+  .use('/locations', categoryRoutes)
 
 module.exports = router
