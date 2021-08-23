@@ -1,4 +1,5 @@
 const vehicleModels = require("../models/vehicles");
+const categoryModels = require("../models/categories");
 const { v4: uuid } = require("uuid");
 const path = require("path");
 const fs = require("fs/promises");
@@ -256,7 +257,7 @@ const editVehicle = async (req, res, next) => {
     let oldImages = [];
     if (req.body.images) {
       const image = req.body.images
-      if (image.length >1) {
+      if (image.length > 1) {
         oldImages = req.body.images
       } else {
         oldImages = req.body.images.split(',');
@@ -297,10 +298,51 @@ const editVehicle = async (req, res, next) => {
   }
 };
 
+const gropedByType = async (req, res, next) => {
+  try {
+    let grouped = {}
+    const resData = await vehicleModels.gropedByType()
+
+    const data = [];
+
+      for (let i = 0; i < resData.length; i++) {
+        let vehicle = resData[i];
+        const parse = JSON.parse(resData[i].images);
+        vehicle.images = parse;
+
+        data.push(vehicle);
+      }
+    
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].category in grouped) {
+        grouped[data[i].category].push(data[i])
+      } else {
+        let temp = []
+        temp.push(data[i])
+        grouped[data[i].category] = temp
+      }
+    }
+
+    let vehicles = Object.keys(grouped)
+
+    for (let i = 0; i < vehicles.length; i++) {
+      vehicles[i] = grouped[vehicles[i]]
+    }
+    
+    res.status(200);
+    res.json({
+      data: vehicles
+     });
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
 module.exports = {
   addVehicle,
   getAllVehicles,
   getVehicle,
   deleteVehicle,
   editVehicle,
+  gropedByType
 };

@@ -66,11 +66,22 @@ const editVehicle = (data, id) => new Promise((resolve, reject) => {
   })
 })
 
+const gropedByType = () => new Promise((resolve, reject) => {
+  conn.query(`SELECT * FROM vehicles`, (error, result) => {
+    if (!error) {
+      resolve(result)
+    } else {
+      reject(error)
+    }
+  })
+})
+
 module.exports = {
   addVehicle,
   getAllVehicles,
   getVehiclesWithPaginate,
   getVehicle,
   deleteVehicle,
-  editVehicle
+  editVehicle,
+  gropedByType
 }
