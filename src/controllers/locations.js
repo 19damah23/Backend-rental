@@ -1,53 +1,52 @@
-const locationModels = require("../models/locations");
-const { v4: uuid } = require("uuid");
+const { v4: uuid } = require('uuid');
+const locationModels = require('../models/locations');
 
 const createLocation = async (req, res, next) => {
   try {
-    const title = req.body.title
+    const { title } = req.body;
 
     const date = new Date();
-    const datetime =
-      date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+    const datetime = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 
     const data = {
       id: uuid().split('-').join(''),
       title,
       createdAt: datetime,
-      updatedAt: datetime
-    }
+      updatedAt: datetime,
+    };
 
-    await locationModels.createLocation(data)
+    await locationModels.createLocation(data);
 
     res.status(201);
     res.json({
       message: 'Successfully created new location',
-      data
+      data,
     });
   } catch (error) {
-    next(new Error(error.message))
+    next(new Error(error.message));
   }
-}
+};
 
 const getLocations = async (req, res, next) => {
   try {
-    const data = await locationModels.getLocations()
+    const data = await locationModels.getLocations();
 
     if (data.length > 0) {
       res.status(200);
       res.json({
-        data
+        data,
       });
     } else {
       res.status(404).send({
-        message: 'Data not found!'
+        message: 'Data not found!',
       });
     }
   } catch (error) {
-    next(new Error(error.message))
+    next(new Error(error.message));
   }
-}
+};
 
-module.exports ={
+module.exports = {
   createLocation,
-  getLocations
-}
+  getLocations,
+};

@@ -1,15 +1,17 @@
 const express = require('express');
+
 const router = express.Router();
 
 const vehiclesController = require('../controllers/vehicles');
-const auth = require('../middlewares/auth')
+const auth = require('../middlewares/auth');
 
 router
   .post('/add', auth, vehiclesController.addVehicle)
   .get('/', vehiclesController.getAllVehicles)
   .get('/grouped', vehiclesController.gropedByType)
+  .get('/:category', vehiclesController.getVehiclesByCategory)
   .get('/:id', vehiclesController.getVehicle)
   .delete('/:id', auth, vehiclesController.deleteVehicle)
-  .patch('/:id', auth, vehiclesController.editVehicle)
+  .patch('/:id', auth, vehiclesController.editVehicle);
 
 module.exports = router;
