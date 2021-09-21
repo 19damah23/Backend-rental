@@ -1,40 +1,40 @@
-const conn = require('../configs/db')
+const conn = require('../configs/db');
 
 // Created data to vehicles table
 const createCategory = (data) => new Promise((resolve, reject) => {
   conn.query('INSERT INTO categories SET ?', data, (error, result) => {
     if (!error) {
-      resolve(result)
+      resolve(result);
     } else {
-      reject(error)
+      reject(error);
     }
-  })
-})
+  });
+});
 
 // Get categories
 const getCategories = () => new Promise((resolve, reject) => {
   conn.query('SELECT * FROM categories', (error, result) => {
     if (!error) {
-      resolve(result)
+      resolve(result);
     } else {
-      reject(error)
+      reject(error);
     }
-  })
-})
+  });
+});
 
 // Get category
 const getCategory = (id) => new Promise((resolve, reject) => {
   conn.query(`SELECT * FROM categories WHERE id = '${id}'`, (error, result) => {
     if (!error) {
-      resolve(result)
+      resolve(result);
     } else {
-      reject(error)
+      reject(error);
     }
-  })
-})
+  });
+});
 
 module.exports = {
   createCategory,
   getCategories,
-  getCategory
-}
+  getCategory,
+};

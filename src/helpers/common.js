@@ -1,16 +1,17 @@
-const nodemailer = require('nodemailer')
+/* eslint-disable no-console */
+const nodemailer = require('nodemailer');
 
 const sendEmail = (toEmail, toName, token) => {
-  let transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     // host: 'smtp.ethereal.email',
     // port: 587,
     // secure: false,
     service: 'Gmail',
     auth: {
       user: process.env.EMAIL_VERIFICATION,
-      pass: process.env.PASS_VERIFICATION
-    }
-  })
+      pass: process.env.PASS_VERIFICATION,
+    },
+  });
 
   transporter.sendMail({
     from: `"Vehicles Rental" <${process.env.EMAIL_VERIFICATION}>`,
@@ -30,14 +31,14 @@ const sendEmail = (toEmail, toName, token) => {
     </body>
     </html>`,
   })
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((error) => {
-    console.log(error)
-  })
-}
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
 module.exports = {
-  sendEmail
-}
+  sendEmail,
+};
