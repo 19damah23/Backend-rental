@@ -10,7 +10,7 @@ const router = require('./src/routes');
 
 const optionCors = {
   credentials: true,
-  origin: ['http://localhost:8080'],
+  origin: ['http://localhost:8080', 'https://vehicle.iamagus.com'],
 };
 
 app.use(express.json());
