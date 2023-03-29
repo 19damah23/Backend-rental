@@ -118,7 +118,7 @@ const login = async (req, res, next) => {
         maxAge: 7200000,
         secure: false,
         path: '/',
-        sameSite: 'none',
+        SameSite: 'none',
       });
       res.cookie('role', user.role, {
         maxAge: 7200000,
