@@ -110,27 +110,23 @@ const login = async (req, res, next) => {
       const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
       res.cookie('token', token, {
         maxAge: 7200000,
-        secure: true,
+        secure: false,
         path: '/',
-        sameSite: 'none',
       });
       res.cookie('userId', user.id, {
         maxAge: 7200000,
-        secure: true,
+        secure: false,
         path: '/',
-        sameSite: 'none',
       });
       res.cookie('role', user.role, {
         maxAge: 7200000,
-        secure: true,
+        secure: false,
         path: '/',
-        sameSite: 'none',
       });
       res.cookie('isAuth', true, {
         maxAge: 7200000,
-        secure: true,
+        secure: false,
         path: '/',
-        sameSite: 'none',
       });
       delete user.password;
 
