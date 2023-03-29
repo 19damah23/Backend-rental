@@ -110,13 +110,13 @@ const login = async (req, res, next) => {
       const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
       res.cookie('token', token, {
         maxAge: 7200000,
-        secure: false,
+        secure: true,
         path: '/',
         sameSite: 'none',
       });
       res.cookie('userId', user.id, {
         maxAge: 7200000,
-        secure: false,
+        secure: true,
         path: '/',
         SameSite: 'none',
       });
