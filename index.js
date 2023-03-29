@@ -8,14 +8,14 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const router = require('./src/routes');
 
-// const optionCors = {
-//   credentials: true,
-//   origin: ['http://localhost:8080', 'https://vehicle.iamagus.com'],
-// };
+const optionCors = {
+  credentials: true,
+  origin: ['http://localhost:8080', 'https://vehicle.iamagus.com', 'https://vehicle-api.iamagus.com'],
+};
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: 'https://vehicle.iamagus.com' }));
+app.use(cors(optionCors));
 app.use(fileUpload());
 app.use('/files', express.static(`${__dirname}/src/assets/images`));
 app.use(cookieParser());
