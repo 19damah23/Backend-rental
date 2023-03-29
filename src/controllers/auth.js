@@ -113,24 +113,28 @@ const login = async (req, res, next) => {
         secure: true,
         path: '/',
         sameSite: 'none',
+        httpOnly: true,
       });
       res.cookie('userId', user.id, {
         maxAge: 7200000,
         secure: true,
         path: '/',
         sameSite: 'none',
+        httpOnly: true,
       });
       res.cookie('role', user.role, {
         maxAge: 7200000,
         secure: true,
         path: '/',
         sameSite: 'none',
+        httpOnly: true,
       });
       res.cookie('isAuth', true, {
         maxAge: 7200000,
         secure: true,
         path: '/',
         sameSite: 'none',
+        httpOnly: true,
       });
       delete user.password;
 
