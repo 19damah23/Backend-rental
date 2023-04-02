@@ -8,9 +8,9 @@ const auth = require('../middlewares/auth');
 router
   .post('/add', auth, vehiclesController.addVehicle)
   .get('/', vehiclesController.getAllVehicles)
+  .get('/:id', vehiclesController.getVehicle)
   .get('/grouped', vehiclesController.gropedByType)
   .get('/:category', vehiclesController.getVehiclesByCategory)
-  .get('/:id', vehiclesController.getVehicle)
   .delete('/:id', auth, vehiclesController.deleteVehicle)
   .patch('/:id', auth, vehiclesController.editVehicle);
 
